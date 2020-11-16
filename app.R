@@ -49,10 +49,10 @@ server <- function(input, output, session) {
         req(input$lexd)
         if(is.null(input$twol)){
         generate_without_twol(input$lexd$datapath) %>%
-            str_split(pattern = ":") %>%
-            tibble(form = map_chr(., 2),
-                   analysis = map_chr(., 1)) %>%
-            select(-1) %>%
+            str_split(pattern = ":", simplify = TRUE) %>% 
+            as.data.frame() %>% 
+            rename(form = V2,
+                   analysis = V1) %>%
             DT::datatable(
                 class = "compact",
                 filter = "top",
