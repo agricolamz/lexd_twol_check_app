@@ -49,10 +49,14 @@ server <- function(input, output, session) {
         req(input$lexd)
         if(is.null(input$twol)){
         generate_without_twol(input$lexd$datapath) %>%
-            str_split(pattern = ":", simplify = TRUE) %>% 
-            as.data.frame() %>% 
-            rename(form = V2,
-                   analysis = V1) %>%
+                str_split_fixed(":", n = 2) %>% 
+                as.data.frame() %>% 
+                rename(form = V2,
+                       analysis = V1) %>% 
+                mutate(form2 = ifelse(form == "", analysis, form),
+                       analysis = ifelse(form == "", "", analysis),
+                       form = form2) %>% 
+                select(-form2) %>% 
             DT::datatable(
                 class = "compact",
                 filter = "top",
